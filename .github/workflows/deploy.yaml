@@ -24,7 +24,7 @@ jobs:
       run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Export Resource Group
-      run: az group export --name Automation-new-env --skip-all-params --output json > template2.json
+      run: az group export --name Automation-new-env --skip-all-params --output json > template3.json
 
     - name: Upload to Azure Blob Storage
-      run: az storage blob upload --account-name storagenewenvpsh1708  --container-name pdf-container --name template2.json --file template2.json --auth-mode key --account-key ${{ secrets.AZURE_STORAGE_KEY }} --default-action Allow
+      run: az storage blob upload --account-name storagenewenvpsh1708  --container-name pdf-container --name template3.json --file template3.json --auth-mode key --account-key ${{ secrets.AZURE_STORAGE_KEY }} --default-action Allow
