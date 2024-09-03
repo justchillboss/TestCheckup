@@ -1,0 +1,23 @@
+Command To Copy Current Resources and Create ARM template in JSON Format:-
+	az group export --name <current-resource-name> --skip-all-params --output json > <json File name>
+	
+	Eg:- az group export --name Automation-new-env --skip-all-params --output json > template2.json
+	
+	
+Command To Create new Resource Group:-
+
+	az group create --name <new-resource-group> --location <location>
+	
+	Eg:- az group create --name Qa-Automation-new-env --location eastus2
+	
+Command To Deploy All the services to new Resource Group :-
+
+	az deployment group create --resource-group <new-resource-group-name> --template-file <json filename>
+	
+	Eg:- az deployment group create --resource-group Automation-new-env_test --template-file template2.json
+	
+Command To Get the connection string of blob storage:-
+
+	az storage account show-connection-string --resource-group <resource-group-name> --name <storage-account-name> --output tsv
+	
+	Eg:- az storage account show-connection-string --resource-group Automation-new-env --name storagenewenvpsh1708 --output tsv

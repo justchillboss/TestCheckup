@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "searchServices_automationsearchacspsh_name": {
+      "type": "String"
+    },
+    "storageAccounts_storagenewenvpsh1708_name": {
+      "type": "String"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2024-06-01-preview",
+      "location": "East US 2",
+      "name": "[parameters('searchServices_automationsearchacspsh_name')]",
+      "properties": {
+        "authOptions": {
+          "apiKeyOnly": {}
+        },
+        "disableLocalAuth": false,
+        "disabledDataExfiltrationOptions": [],
+        "encryptionWithCmk": {
+          "enforcement": "Unspecified"
+        },
+        "hostingMode": "Default",
+        "networkRuleSet": {
+          "bypass": "None",
+          "ipRules": []
+        },
+        "partitionCount": 1,
+        "publicNetworkAccess": "Enabled",
+        "replicaCount": 1,
+        "semanticSearch": "disabled"
+      },
+      "sku": {
+        "name": "free"
+      },
+      "type": "Microsoft.Search/searchServices"
+    },
+    {
+      "apiVersion": "2023-05-01",
+      "kind": "StorageV2",
+      "location": "eastus2",
+      "name": "[parameters('storageAccounts_storagenewenvpsh1708_name')]",
+      "properties": {
+        "accessTier": "Hot",
+        "allowBlobPublicAccess": false,
+        "allowCrossTenantReplication": false,
+        "allowSharedKeyAccess": true,
+        "defaultToOAuthAuthentication": false,
+        "dnsEndpointType": "Standard",
+        "encryption": {
+          "keySource": "Microsoft.Storage",
+          "requireInfrastructureEncryption": false,
+          "services": {
+            "blob": {
+              "enabled": true,
+              "keyType": "Account"
+            },
+            "file": {
+              "enabled": true,
+              "keyType": "Account"
+            }
+          }
+        },
+        "largeFileSharesState": "Enabled",
+        "minimumTlsVersion": "TLS1_2",
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "defaultAction": "Deny",
+          "ipRules": [
+            {
+              "action": "Allow",
+              "value": "43.243.173.50"
+            }
+          ],
+          "resourceAccessRules": [],
+          "virtualNetworkRules": []
+        },
+        "publicNetworkAccess": "Enabled",
+        "supportsHttpsTrafficOnly": true
+      },
+      "sku": {
+        "name": "Standard_RAGRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "apiVersion": "2023-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storagenewenvpsh1708_name'))]"
+      ],
+      "name": "[concat(parameters('storageAccounts_storagenewenvpsh1708_name'), '/default')]",
+      "properties": {
+        "containerDeleteRetentionPolicy": {
+          "days": 7,
+          "enabled": true
+        },
+        "cors": {
+          "corsRules": []
+        },
+        "deleteRetentionPolicy": {
+          "allowPermanentDelete": false,
+          "days": 7,
+          "enabled": true
+        }
+      },
+      "sku": {
+        "name": "Standard_RAGRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Storage/storageAccounts/blobServices"
+    },
+    {
+      "apiVersion": "2023-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storagenewenvpsh1708_name'))]"
+      ],
+      "name": "[concat(parameters('storageAccounts_storagenewenvpsh1708_name'), '/default')]",
+      "properties": {
+        "cors": {
+          "corsRules": []
+        },
+        "protocolSettings": {
+          "smb": {}
+        },
+        "shareDeleteRetentionPolicy": {
+          "days": 7,
+          "enabled": true
+        }
+      },
+      "sku": {
+        "name": "Standard_RAGRS",
+        "tier": "Standard"
+      },
+      "type": "Microsoft.Storage/storageAccounts/fileServices"
+    },
+    {
+      "apiVersion": "2023-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storagenewenvpsh1708_name'))]"
+      ],
+      "name": "[concat(parameters('storageAccounts_storagenewenvpsh1708_name'), '/default')]",
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      },
+      "type": "Microsoft.Storage/storageAccounts/queueServices"
+    },
+    {
+      "apiVersion": "2023-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storagenewenvpsh1708_name'))]"
+      ],
+      "name": "[concat(parameters('storageAccounts_storagenewenvpsh1708_name'), '/default')]",
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      },
+      "type": "Microsoft.Storage/storageAccounts/tableServices"
+    },
+    {
+      "apiVersion": "2023-05-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_storagenewenvpsh1708_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storagenewenvpsh1708_name'))]"
+      ],
+      "name": "[concat(parameters('storageAccounts_storagenewenvpsh1708_name'), '/default/pdf-container')]",
+      "properties": {
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "publicAccess": "None"
+      },
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers"
+    }
+  ],
+  "variables": {}
+}
